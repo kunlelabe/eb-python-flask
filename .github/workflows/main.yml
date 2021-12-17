@@ -1,39 +1,10 @@
-name: Python application
-
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
-         
-    - name: Checkout source code
-      uses: actions/checkout@v2
-      
-    - name: Upload build Artifact    
-      uses: actions/upload-artifact@v2.3.1
-      with:
-        name: deployment
-        path: ${{ github.workspace }}
-    
-    - name: Generate deployment package
-      run: zip -r deployment.zip . -x '*.git*'
-    
-    - name: Get Version Number
-      id: version
-      uses: nanzm/get-time-action@v1.1
-      with:
-        timeZone: 0
-        format: 'YYYY-MM-DD-HH-mm-ss'
-      
-                  
-    - name: Deploy to EB
-      uses: einaregilsson/beanstalk-deploy@v19
-      with:
-        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: Myinstapp2
-        environment_name: Myinstapp2-env
-        version_label: ${{ github.run_id }}
-        region: us-east-1
-        deployment_package: deployment.zip
+- name: Deploy to EB
+  uses: einaregilsson/beanstalk-deploy@v19
+   with:
+     aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+     aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+     application_name: Myinstapp2
+     environment_name: Myinstapp2-env
+     version_label: ${{ github.run_id }}
+     region: us-east-1
+     deployment_package: deployment.zip
